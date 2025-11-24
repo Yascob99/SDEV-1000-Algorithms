@@ -1,0 +1,8 @@
+FUNCTION linearSearch(list, value)
+    FOR i = 0 TO length(list)
+        IF list[i] = value:
+            RETURN i
+        ENDIF
+    ENDFOR
+    RETURN None
+ENDFUNCTION
