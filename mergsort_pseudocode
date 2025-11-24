@@ -1,0 +1,44 @@
+FUNCTION MergeSort(myList)
+    IF length(myList) <= 1  //if the list only has one item in it, return the list
+        RETURN myList
+    ENDIF
+    DECLARE leftHalf = left half of myList
+    DECLARE rightHalf = right half of myList
+
+    // recursively merge smaller and smaller lists.
+    SET leftHalf = mergeSort(leftHalf)
+    SET rightHalf = mergeSort(rightHalf)
+
+    RETURN merge(leftHalf, rightHalf)
+ENDFUNCTION
+
+FUNCTION Merge(left, right)
+    DECLARE mergedList = [] // empty list to hold the merged version
+    DECLARE i = 0       //make one index for each of the lists
+    DECLARE j = 0
+
+    WHILE i < length(left) AND j < length(right)
+        IF left[i] <= right[j]
+            ADD left[i] to mergedList
+            SET i = i + 1
+        ELSE
+            ADD right[j] to mergedList
+            SET j = j + 1
+        ENDIF
+    ENDWHILE
+
+    // add any remaining elements from the left list
+    WHILE i < length(left)
+        ADD left[i] TO mergedList
+        SET i = i + 1
+    ENDWHILE
+    
+    // Add any remaining elements from the right list
+    WHILE j < length(right)
+        ADD right[j] TO mergedList
+        SET j = j + 1
+    ENDWHILE
+
+    // return the final merged list
+    RETURN mergedList
+ENDFUNCTION

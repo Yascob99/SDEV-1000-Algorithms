@@ -1,9 +1,8 @@
 def bubbleSort(list):
     length = len(list)
-    for i in range(length):
-        j = 0
+    for i in range(length - 1):
         # while j is not out of index and is not at the currently sorted values.
-        while j < length - i -1:
+        for j in range(length - i - 1):
             # if the current value is larger than the next number swap
             if list[j] > list[j+1]:
                 temp = list[j]

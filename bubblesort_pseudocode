@@ -1,0 +1,10 @@
+START
+INPUT myList
+FOR i = 0 TO length(myList) - 1     // create the outer for loop
+    FOR j = 0 TO length(myList) - 1 - i // create the inner for loop
+        IF (myList[j] > myList[j + 1])      // if the next item is greater than the current item 
+            SWAP myList[j] and myList[j + 1]      // swap the value at the next index with the current index                       
+        ENDIF
+    ENDFOR
+ENDFOR
+END
