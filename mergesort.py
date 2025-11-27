@@ -35,7 +35,6 @@ def mergeSort(list):
     
     # divide the lists into equal parts
     leftsize = length//2
-    rightsize = length - leftsize
     leftlist = []
     rightlist = []
     for i in range(length):
