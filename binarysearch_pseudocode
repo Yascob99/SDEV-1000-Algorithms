@@ -1,6 +1,6 @@
 FUNCTION binarySearch(sorted, value)
     DECLARE start = 0
-    DECLARE end = length(sortedList)
+    DECLARE end = length(sorted)
     DECLARE half
     WHILE start != end
         SET half = halfway between start and end
