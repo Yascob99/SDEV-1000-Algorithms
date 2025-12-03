@@ -1,0 +1,141 @@
+
+FUNCTION accessInventory(user_name, password)
+WHILE True:
+    PRINT ("Please Login")
+    INPUT user_name
+    INPUT password
+    IF user_name AND password == True THEN
+        DISPLAY "Welcome to Inventory Management Landing Page"
+    ELSE
+        RETURN False
+        DISPLAY "Please Try Again"
+    END IF
+END WHILE
+ENDFUNCTION
+
+FUNCTION linearSearch(list, value)
+    FOR i = 0 TO length(list)
+        IF list[i] = value:
+            RETURN i
+        ENDIF
+    ENDFOR
+    RETURN None
+ENDFUNCTION
+
+FUNCTION binarySearch(sorted, value)
+    DECLARE start = 0
+    DECLARE end = length(sortedList)
+    DECLARE half
+    WHILE start != end
+        SET half = halfway between start and end
+        IF sorted[half] = value
+            return half
+        ENDIF
+        ELSE IF sorted[half] > Value
+            SET start = half
+        ENDIF
+        ELSE
+            SET END = half
+        ENDELSE
+    ENDWHILE
+    RETURN NONE
+ENDFUNCTION
+
+FUNCTION MergeSort(myList)
+    IF length(myList) <= 1  //if the list only has one item in it, return the list
+        RETURN myList
+    ENDIF
+    DECLARE leftHalf = left half of myList
+    DECLARE rightHalf = right half of myList
+
+    // recursively merge smaller and smaller lists.
+    SET leftHalf = mergeSort(leftHalf)
+    SET rightHalf = mergeSort(rightHalf)
+
+    RETURN merge(leftHalf, rightHalf)
+ENDFUNCTION
+
+FUNCTION Merge(left, right)
+    DECLARE mergedList = [] // empty list to hold the merged version
+    DECLARE i = 0       //make one index for each of the lists
+    DECLARE j = 0
+
+    WHILE i < length(left) AND j < length(right)
+        IF left[i] <= right[j]
+            ADD left[i] to mergedList
+            SET i = i + 1
+        ELSE
+            ADD right[j] to mergedList
+            SET j = j + 1
+        ENDIF
+    ENDWHILE
+
+    // add any remaining elements from the left list
+    WHILE i < length(left)
+        ADD left[i] TO mergedList
+        SET i = i + 1
+    ENDWHILE
+    
+    // Add any remaining elements from the right list
+    WHILE j < length(right)
+        ADD right[j] TO mergedList
+        SET j = j + 1
+    ENDWHILE
+
+    // return the final merged list
+    RETURN mergedList
+ENDFUNCTION
+
+START
+
+accessInventory(user_name, password)
+linearSearch(list, values)
+binarySearch(sorted, value)
+INPUT myList
+FOR i = 0 TO length(myList) - 1     // create the outer for loop
+    FOR j = 0 TO length(myList) - 1 - i // create the inner for loop
+        IF (myList[j] > myList[j + 1])      // if the next item is greater than the current item 
+            SWAP myList[j] and myList[j + 1]      // swap the value at the next index with the current index                       
+        ENDIF
+    ENDFOR
+ENDFOR
+DO:
+    DISPLAY "Product Information"
+    IF modifyPrice AND Conformation == True THEN
+        INPUT Update
+        DISPLAY "Thanks for updating!"
+    IF modifyQuantity AND Conformation == True THEN
+        INPUT Update
+        DISPLAY "Thanks for updating!"
+    IF modifyCategory AND Conformation == True THEN
+        INPUT Update
+        DISPLAY "Thanks for updating!"
+        RETURN False
+UNTIL False
+
+END
+
+REMOVING A PRODUCT
+
+START
+
+accessInventory(user_name, password)
+linearSearch(list, values)
+binarySearch(sorted, value)
+INPUT myList
+FOR i = 0 TO length(myList) - 1     // create the outer for loop
+    FOR j = 0 TO length(myList) - 1 - i // create the inner for loop
+        IF (myList[j] > myList[j + 1])      // if the next item is greater than the current item 
+            SWAP myList[j] and myList[j + 1]      // swap the value at the next index with the current index                       
+        ENDIF
+    ENDFOR
+ENDFOR
+DO:
+    DISPLAY "Product Information"
+    IF removeItem == True THEN
+        Display "Product Removed"
+    ELSE
+        RETURN False
+UNTIL False
+
+END
