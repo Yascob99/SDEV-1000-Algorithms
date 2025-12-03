@@ -1,4 +1,5 @@
 from pathlib import Path
+import math
 import matplotlib.pyplot as plt
 from datetime import datetime
 CWD = Path.cwd()
@@ -167,15 +168,27 @@ def correlation_report(productData):
     x = []
     y = []
     titles = []
+    sigmaX = 0
+    sigmaY = 0
+    sigmaXSq = 0
+    sigmaYSq = 0
+    sigmaXY = 0
+    size = len(productData)
     for product in productData:
         x.append(product['Price'])
         y.append(product['Quantity'])
         titles.append(product['Product Name'])
+        sigmaX += x
+        sigmaY += y
+        sigmaXSq += x*x
+        sigmaYSq += y*y
+        sigmaXY += x*y
+    correlation = (size * (sigmaXY) - sigmaX * sigmaY) / math.sqrt((size * sigmaXSq - sigmaX * sigmaX)* (size * sigmaYSq - sigmaY * sigmaY))
     plt.figure(figsize=(14, 6))
     plt.scatter(x, y,  edgecolors='black')
     plt.xlabel("Price")
     plt.ylabel("Quantity Sold")
-    plt.title("Price to Quantity Scatter Plot")
+    plt.title(f"Price to Quantity | Correlation: {correlation}")
     for i, label in enumerate(titles):
         plt.annotate(label, (x[i] -5, y[i] + 3))
         

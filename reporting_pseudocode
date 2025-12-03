@@ -1,0 +1,211 @@
+
+//Takes in a list of the orders which are saved to a dictionary with the column name as key. Returns a list of orders and a list of products derived from the data.
+FUNCTION processData(orders)
+    DECLARE Dictionary newOrders (Key: orderID Value: order)
+    DECLARE newOrder
+    DECLARE orderID
+    DECLARE product
+    DECLARE products = []
+    DECLARE productKeys = []
+    DECLARE productID
+    //coallate orders by OrderID
+    FOR order in orders
+        SET Dictionary newOrder ()
+        SET orderID = order["OrderID"]
+        SET productID = order['productID']
+        SET Dictionary product (
+                'Product ID': order['Product ID'],
+                'Product Name': order['Product Name'],
+                'Category': order['Category'],
+                'Quantity': int(order['Quantity']),
+                'Price': float(order['Price']),
+                'Discount Applied': float(order['Discount Applied']),
+                'Total Price': float(order['Total Price'])
+        )
+        //If the order already exists add the product to the products list of the existing order.
+        IF orderID in orderKeys:
+            ADD product to newOrders[orderID]['products'] 
+        ENDIF
+        // else initialize a new order and add the product from this line to the products list.
+        ELSE
+            SET Dictionary neworder (
+                "OrderID":order["OrderID"],
+                "Date":order["Date"],
+                "Products":[product]
+            )
+            SET newOrders[orderID] = newOrder
+        ENDELSE
+        // the other categories are unecessary for when storing just as a product
+        SET Dictionary product (
+            'Product Name': order['Product Name'],
+            'Category': order['Category'],
+            'Quantity': int(order['Quantity']),
+            'Price': float(order['Price']),
+            'Total Price': float(order['Total Price'])
+        )
+        //create a new entry if it doesn't exist
+        IF productID not in productKeys
+            ADD productID to productKeys
+            SET products[productID] = product
+        ENDIF
+        //IF the product already is known, track the total quantity sold and the total price
+        ELSE
+            products[productID]['Quantity'] += product['Quantity']
+            products[productID]['Total Price'] += product['Total Price']
+        ENDELSE
+    ENDFOR
+    RETURN newOrders, product
+ENDFUNCTION
+
+FUNCTION MergeSort(myList, sortby)
+    IF length(myList) <= 1  //if the list only has one item in it, return the list
+        RETURN myList
+    ENDIF
+    DECLARE leftHalf = left half of myList
+    DECLARE rightHalf = right half of myList
+
+    // recursively merge smaller and smaller lists.
+    SET leftHalf = mergeSort(leftHalf, sortby)
+    SET rightHalf = mergeSort(rightHalf, sortby)
+
+    RETURN merge(leftHalf, rightHalf, sortby)
+ENDFUNCTION
+
+FUNCTION Merge(left, right, sortby)
+    DECLARE mergedList = [] // empty list to hold the merged version
+    DECLARE i = 0       //make one index for each of the lists
+    DECLARE j = 0
+
+    IF sortby == None
+        WHILE i < length(left) AND j < length(right)
+            IF left[i] <= right[j]
+                ADD left[i] to mergedList
+                SET i = i + 1
+            ELSE
+                ADD right[j] to mergedList
+                SET j = j + 1
+            ENDIF
+        ENDWHILE
+    ENDIF
+    ELSE
+        WHILE i < length(left) AND j < length(right)
+            IF left[i][sortby] <= right[j][sortby]
+                ADD left[i] to mergedList
+                SET i = i + 1
+            ELSE
+                ADD right[j] to mergedList
+                SET j = j + 1
+            ENDIF
+        ENDWHILE
+    ENDELSE
+
+    // add any remaining elements from the left list
+    WHILE i < length(left)
+        ADD left[i] TO mergedList
+        SET i = i + 1
+    ENDWHILE
+    
+    // Add any remaining elements from the right list
+    WHILE j < length(right)
+        ADD right[j] TO mergedList
+        SET j = j + 1
+    ENDWHILE
+
+    // return the final merged list
+    RETURN mergedList
+ENDFUNCTION
+
+FUNCTION statisticsReport(orders)
+    DECLARE numOrders = length(orders)
+    DELCARE totalRevenue = 0
+    FOR order in orders
+        FOR Product in order['Products']
+            totalRevenue += 'Total Price'
+        ENDFOR
+    ENDFOR
+    OUTPUT totalRevenue
+ENDFUNCTION
+
+FUNCTION productReport(products)
+    DECLARE sorted = mergeSort(products, 'Quantity')
+    DECLARE length = length(products)
+    DECLARE topFive = []
+    DECLARE botFive = []
+    //Handles the case were the sales data is less than 5
+    DECLARE size = length
+    IF length > 4
+        size = 5
+    ENDIF
+    
+    FOR i = 0 to length -1
+        ADD products[length - 1 - i] to topFive
+        ADD products[i] to botFive
+    ENDFOR
+    OUTPUT Product Name and Quantity of each product in topFive as a table
+    OUTPUT Product Name and Quantity of each product in botFive as a table
+ENDFUNCTION
+
+FUNCTION correlationReport(products)
+    DECLARE x
+    DECLARE y
+    DECLARE label
+    DECLARE sigmaX = 0
+    DECLARE sigmaY = 0
+    DECLARE sigmaXSq = 0
+    DECLARE sigmaYSq = 0
+    DECLARE sigmaXY = 0
+    DECLARE size = length(products)
+    FOR product in products
+        SET x = product['Price']
+        SET y = product['Quantity']
+        SET sigmaX += x
+        SET sigmaY += y
+        SET sigmaXSq += x*x
+        SET sigmaYSq += y*y
+        SET sigmaXY += x*y
+    ENDFOR
+    DECLARE correlation = (size * (sigmaXY) - sigmaX * sigmaY) / sqrt((size * sigmaXSq - sigmaX * sigmaX)* (size * sigmaYSq - sigmaY * sigmaY))
+    OUTPUT "Correlation Coefficient: " correlation 
+    OUTPUT as a scatterplot with Price and Quantity as axes
+ENDFUNCTION
+
+FUNCTION probabilityReport(OrdersbyDate, productID)
+    DECLARE timespan = the difference in days between the date of order of the first and last order in OrdersbyDate.
+    DECLARE dateKeys = []
+    DECLARE Dictonary soldDates (Key: Date Value: Quantity)
+    DECLARE totalSold = 0
+    DECLARE numSales = 0
+    FOR order in ordersbyDate:
+        date = order["Date"]
+        FOR product in order["Products"]:
+            IF product["Product ID"] == productID:
+                IF date in dateKeys:
+                    SET soldDates[date] += product['Quantity']
+                ENDIF
+                ELSE:
+                    SET soldDates[date] = product['Quantity']
+                    SET dateKeys.append(date)
+                ENDELSE
+                SET numSales +=1
+                SET totalSold += product['Quantity']
+            ENDIF
+        ENDFOR
+    ENDFOR
+
+    SET numDaysSold = length(dateKeys)
+    SET percentDaysSold = numDaysSold/timespan * 100 
+    SET avgSoldPerDay = totalSold/timespan
+    SET avgSoldPerDaySold = totalSold/numDaysSold
+    OUTPUT numDaysSold, percentDaysSold, avgSoldPerDay, avgSoldPerDaySold to a table rounded to the nearest 2 decimal places as a table
+ENDFUNCTION
+
+FUNCTION trendReport(ordersByDate)
+
+//takes in a list of rows and outputs it as a table
+
+START
+    DECLARE data = import CSV to a list of dictionaries with the column name as key
+    DECLARE orders, products = processData(data)
+    DECLARE ordersByDate = mergeSort(orders, 'Date')
+
+END
