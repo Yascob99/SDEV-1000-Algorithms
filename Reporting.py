@@ -2,6 +2,7 @@ from pathlib import Path
 import math
 import matplotlib.pyplot as plt
 from datetime import datetime
+import numpy as np
 CWD = Path.cwd()
 
 
@@ -178,11 +179,11 @@ def correlation_report(productData):
         x.append(product['Price'])
         y.append(product['Quantity'])
         titles.append(product['Product Name'])
-        sigmaX += x
-        sigmaY += y
-        sigmaXSq += x*x
-        sigmaYSq += y*y
-        sigmaXY += x*y
+        sigmaX += product['Price']
+        sigmaY += product['Quantity']
+        sigmaXSq += product['Price']*product['Price']
+        sigmaYSq += product['Quantity']*product['Quantity']
+        sigmaXY += product['Price']*product['Quantity']
     correlation = (size * (sigmaXY) - sigmaX * sigmaY) / math.sqrt((size * sigmaXSq - sigmaX * sigmaX)* (size * sigmaYSq - sigmaY * sigmaY))
     plt.figure(figsize=(14, 6))
     plt.scatter(x, y,  edgecolors='black')
@@ -191,7 +192,7 @@ def correlation_report(productData):
     plt.title(f"Price to Quantity | Correlation: {correlation}")
     for i, label in enumerate(titles):
         plt.annotate(label, (x[i] -5, y[i] + 3))
-        
+    plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), linestyle="--") #plots a trendline based on the data. I copied this from stack overflow 
     plt.show()
     
 def probability_report(ordersbyDate, productID):
@@ -266,6 +267,7 @@ def trend_report(ordersByDate):
         dailySalesVolume.append(dailySales[date]["Quantity"])
         dailySalesRevenue.append(dailySales[date]["Total Price"])
         formatedDates.append(datetime.strftime(datetime.strptime(date, "%Y-%m-%d"), "%m/%d"))
+    dateDays = range(len(dates))
     for category in categories:
         catSalesVolume.append(categorySales[category]["Quantity"])
         catSalesRevenue.append(categorySales[category]["Total Price"])

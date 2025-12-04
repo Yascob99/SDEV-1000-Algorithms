@@ -1,7 +1,7 @@
 
 //Takes in a list of the orders which are saved to a dictionary with the column name as key. Returns a list of orders and a list of products derived from the data.
 FUNCTION processData(orders)
-    DECLARE Dictionary newOrders (Key: orderID Value: order)
+    DECLARE Dictionary newOrders (Key: <keyName>, Value: <valueName>)
     DECLARE newOrder
     DECLARE orderID
     DECLARE product
@@ -10,7 +10,7 @@ FUNCTION processData(orders)
     DECLARE productID
     //coallate orders by OrderID
     FOR order in orders
-        SET Dictionary newOrder ()
+        SET Dictionary newOrder (Key: <keyName>, Value: <valueName>)
         SET orderID = order["OrderID"]
         SET productID = order['productID']
         SET Dictionary product (
@@ -23,9 +23,8 @@ FUNCTION processData(orders)
                 'Total Price': float(order['Total Price'])
         )
         //If the order already exists add the product to the products list of the existing order.
-        IF orderID in orderKeys:
+        IF orderID in orderKeys THEN
             ADD product to newOrders[orderID]['products'] 
-        ENDIF
         // else initialize a new order and add the product from this line to the products list.
         ELSE
             SET Dictionary neworder (
@@ -34,7 +33,7 @@ FUNCTION processData(orders)
                 "Products":[product]
             )
             SET newOrders[orderID] = newOrder
-        ENDELSE
+        ENDIF
         // the other categories are unecessary for when storing just as a product
         SET Dictionary product (
             'Product Name': order['Product Name'],
@@ -44,21 +43,20 @@ FUNCTION processData(orders)
             'Total Price': float(order['Total Price'])
         )
         //create a new entry if it doesn't exist
-        IF productID not in productKeys
+        IF productID not in productKeys THEN
             ADD productID to productKeys
             SET products[productID] = product
-        ENDIF
-        //IF the product already is known, track the total quantity sold and the total price
-        ELSE
+        
+        ELSE //IF the product already is known, track the total quantity sold and the total price
             products[productID]['Quantity'] += product['Quantity']
             products[productID]['Total Price'] += product['Total Price']
-        ENDELSE
+        ENDIF
     ENDFOR
     RETURN newOrders, product
 ENDFUNCTION
 
 FUNCTION MergeSort(myList, sortby)
-    IF length(myList) <= 1  //if the list only has one item in it, return the list
+    IF length(myList) <= 1 THEN //if the list only has one item in it, return the list
         RETURN myList
     ENDIF
     DECLARE leftHalf = left half of myList
@@ -76,9 +74,19 @@ FUNCTION Merge(left, right, sortby)
     DECLARE i = 0       //make one index for each of the lists
     DECLARE j = 0
 
-    IF sortby == None
+    IF sortby == None THEN
         WHILE i < length(left) AND j < length(right)
-            IF left[i] <= right[j]
+            IF left[i] <= right[j] THEN
+                ADD left[i] to mergedList
+                SET i = i + 1
+            ELSE
+                ADD right[j] to mergedList
+                SET j = j + 1
+            ENDIF
+        ENDWHILE
+    ELSE
+        WHILE i < length(left) AND j < length(right)
+            IF left[i][sortby] <= right[j][sortby] THEN
                 ADD left[i] to mergedList
                 SET i = i + 1
             ELSE
@@ -87,17 +95,6 @@ FUNCTION Merge(left, right, sortby)
             ENDIF
         ENDWHILE
     ENDIF
-    ELSE
-        WHILE i < length(left) AND j < length(right)
-            IF left[i][sortby] <= right[j][sortby]
-                ADD left[i] to mergedList
-                SET i = i + 1
-            ELSE
-                ADD right[j] to mergedList
-                SET j = j + 1
-            ENDIF
-        ENDWHILE
-    ENDELSE
 
     // add any remaining elements from the left list
     WHILE i < length(left)
@@ -133,7 +130,7 @@ FUNCTION productReport(products)
     DECLARE botFive = []
     //Handles the case were the sales data is less than 5
     DECLARE size = length
-    IF length > 4
+    IF length > 4 THEN
         size = 5
     ENDIF
     
@@ -172,20 +169,19 @@ ENDFUNCTION
 FUNCTION probabilityReport(OrdersbyDate, productID)
     DECLARE timespan = the difference in days between the date of order of the first and last order in OrdersbyDate.
     DECLARE dateKeys = []
-    DECLARE Dictonary soldDates (Key: Date Value: Quantity)
+    DECLARE Dictonary soldDates (Key: <keyName>, Value: <valueName>)
     DECLARE totalSold = 0
     DECLARE numSales = 0
-    FOR order in ordersbyDate:
+    FOR order in ordersbyDate
         date = order["Date"]
-        FOR product in order["Products"]:
+        FOR product in order["Products"]
             IF product["Product ID"] == productID:
-                IF date in dateKeys:
+                IF date in dateKeys THEN
                     SET soldDates[date] += product['Quantity']
-                ENDIF
-                ELSE:
+                ELSE
                     SET soldDates[date] = product['Quantity']
                     SET dateKeys.append(date)
-                ENDELSE
+                ENDIF
                 SET numSales +=1
                 SET totalSold += product['Quantity']
             ENDIF
@@ -200,12 +196,97 @@ FUNCTION probabilityReport(OrdersbyDate, productID)
 ENDFUNCTION
 
 FUNCTION trendReport(ordersByDate)
+    DECLARE date
+    DECLARE category
+    DECLARE prevDate = None
+    DECLARE categories = []
+    DECLARE dates = []
+    DECLARE Dictionary categorySales (Key: <keyName>, Value: <valueName>)
+    DECLARE Dictionary dailySales (Key: <keyName>, Value: <valueName>)
+    DECLARE Dictionary sales (Key: <keyName>, Value: <valueName>)
+    FOR orders in ordersByDate
+        SET date = order["Date"]
+        // add all the sales data from the previous date to the dict when starting on a new date
+        IF date != prevDate and prevDate != None THEN
+            SET dailySales[prevDate] = sales
+            SET Dictionary sales (Key: <keyName>, Value: <valueName>)
+            ADD date to dates
+        ENDIF
+        FOR product in order["Products"]
+            SET category = product["Category"]
+            // Organizes the data for the category axis
+            IF category not in categories THEN
+                SET categorySales[category]["Quantity"] = ("Quantity":product["Quantity"], "Total Price":product["Total Price"])
+                ADD category to categories
+            ELSE
+                SET categorySales[category]["Quantity"] += product["Quantity"]
+                SET categorySales[category]["Total Price"] += product["Total Price"]
+            ENDIF
+            // adds data to the sales data for the current date.
+            IF "Quantity" is key in sales THEN
+                SET sales["Quantity"] = product["Quantity"]
+                SET salse["Total Price"] = product["Total Price"]
+            ELSE
+                SET sales["Quantity"] += product["Quantity"]
+                SET sales["Total Price"] += product["Total Price"]
+            ENDIF
+        ENDFOR
+        SET prevDate = date
+    ENDFOR
+    //the last day of sales doesn't get handled during the loop, so handling it after.
+    SET dailySales[prevDate] = sales 
+    IF date != prevDate THEN
+        ADD date to dates
+    ENDIF
+    DECLARE dailySalesVolume = []
+    DECLARE dailySalesRevenue = []
+    // move the data into individual lists for easier processing of each axis
+    FOR date in dates
+        ADD dailySales[date]["Quantity"] to dailySalesVolume
+        ADD dailySales[date]["Total Price"] to dailySaleRevenue
+    ENDFOR
+    DECLARE categorySalesVolume
+    DECLARE categorySalesRevenue
+    FOR category in categories
+        ADD categorySales[category]["Quantity"] to  categorySalesVolume
+        ADD categorySales[category]["Total Price"] to categorySalesRevenue
+    ENDFOR
+    OUTPUT Graph named "Volume of Sales by Date" with dates as x axis and dailySalesVolume as the y axis
+    OUTPUT Graph named "Revenue of Sales by Date" with dates as x axis and dailySalesRevenue as the y axis
+    OUTPUT Graph named "Volume of Sales by Category" with categories as x axis and categorySalesVolume as the y axis
+    OUTPUT Graph named "Revenue of Sales by Category" with categories as x axis and categorySalesRevenue as the y axis
+ENDFUNCTION
 
-//takes in a list of rows and outputs it as a table
+FUNCTION getProductIDByName(name, products)
+    FOR product in products
+        IF product["Product Name"] == name THEN
+            RETURN product["ProductID"]
+        ENDIF
+    ENDFOR
+    RETURN None
+ENDFUNCTION
 
 START
     DECLARE data = import CSV to a list of dictionaries with the column name as key
     DECLARE orders, products = processData(data)
     DECLARE ordersByDate = mergeSort(orders, 'Date')
-
+    DECLARE quit = false
+    DECLARE productID
+    DISPLAY a report menu with reports to generate and a quit button
+    DO
+        INPUT reportToGenerate or quit
+        IF reportToGenerate == "Product" THEN
+            productReport(products)
+        ELSEIF reportToGenerate == "Correlation" THEN
+            correlationReport(products)
+        ELSEIF reportToGenerate == "Probability" THEN
+            INPUT productName
+            SET productID = getProductIDByName(productName)
+            probabilityReport(ordersByDate, productID)
+        ELSEIF reportToGenerate == "Trend" THEN
+            trendReport(ordersByDate)
+        ELSE
+            DISPLAY "ERROR, invalid report type."
+        ENDIF
+    UNTIL NOT quit
 END
