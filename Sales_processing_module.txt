@@ -1,5 +1,6 @@
 Processing Sales Transactions Pseudocode
-FUNCTION newItemSearch()
+
+FUNCTION newItemSearch() // function to handle if the item is not in inventory or not enough quantity in inventory
     DECLARE itemSearch = TRUE
     DISPLAY Would you like to complete a new item search? (y/n)
     INPUT userInput
@@ -8,7 +9,8 @@ FUNCTION newItemSearch()
     ENDIF
     RETURN itemSearch
 ENDFUNCTION
-FUNCTION continueShopping() 
+
+FUNCTION continueShopping() // function used as an exit condition for a the adding items to cart loop
     DECLARE continueToShop = TRUE
     DISPLAY Continue Shopping? (y/n)
     INPUT userInput
@@ -17,22 +19,25 @@ FUNCTION continueShopping()
     ENDIF
     RETURN continueToShop
 ENDFUNCTION
-FUNCTION discountCalculation(Price)
+
+FUNCTION discountCalculation(Price) // function to calculate discount and return that cost 
     DECLARE discount = 10%
     discountPrice = Price * discount
     totalCost = Price - discountPrice
     RETURN totalCost
 ENFUNCTION
-FUNCTION salesReceipt(userOrder)
+
+FUNCTION salesReceipt(userOrder) // takes in the user order to display a sales receipt to then save to sales_data.csv
     DEFINE salesReceipt (Product Names, Quantities, Individual Prices, totalCost)
     SET salesReceipt = userOrder
     DISPLAY Thank you for your order.
     DISPLAY salesReceipt
     RETURN
 END
+
 START
 DEFINE salesReceipt // userOrder after calculation of cost
-Declare Inventory = [inventoryData]  // stores available inventory (Product ID,Product Name,Category,Quantity,Price)
+Declare Inventory = {inventoryData}  // stores available inventory (Product ID,Product Name,Category,Quantity,Price)
 DECLARE Cart = [Empty list]  // stores users items while they shop
     DO 
         INPUT ProductID
