@@ -18,6 +18,7 @@ FUNCTION continueShopping() // function used as an exit condition for a the addi
     ENDIF
     RETURN continueToShop
 ENDFUNCTION
+
 FUNCTION discountCalculation(Price)
     DECLARE discount = 0.10
     discountPrice = Price * discount
