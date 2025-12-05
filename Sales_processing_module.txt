@@ -2,8 +2,7 @@ Processing Sales Transactions Pseudocode
 
 FUNCTION newItemSearch() // function to handle if the item is not in inventory or not enough quantity in inventory
     DECLARE itemSearch = TRUE
-    DISPLAY Would you like to complete a new item search? (y/n)
-    INPUT userInput
+    INPUT userInput = Would you like to complete a new item search? (y/n) 
     IF userInput == "n" THEN
         itemSearch = FALSE
     ENDIF
@@ -19,9 +18,8 @@ FUNCTION continueShopping() // function used as an exit condition for a the addi
     ENDIF
     RETURN continueToShop
 ENDFUNCTION
-
-FUNCTION discountCalculation(Price) // function to calculate discount and return that cost 
-    DECLARE discount = 10%
+FUNCTION discountCalculation(Price)
+    DECLARE discount = 0.10
     discountPrice = Price * discount
     totalCost = Price - discountPrice
     RETURN totalCost
@@ -45,9 +43,9 @@ DECLARE Cart = [Empty list]  // stores users items while they shop
                 INPUT Quantity
                     IF Quantity IN Inventory THEN
                         SET Cart = [ProductID:Quantity]
-                    ELIF Quantity > Inventory THEN
+                    ELSE IF Quantity > Inventory THEN
                         DISPLAY length(Quantity) IN Inventory
-                        DISPLAY Would you like to add available amount? (y/n)
+                        INPUT userInput = Would you like to add available amount? (y/n)
                             IF userInput == "y" THEN
                                 SET Quantity = quantityInInventory
                                 SET Cart [ProductID:Quantity]
@@ -91,21 +89,3 @@ DECLARE Cart = [Empty list]  // stores users items while they shop
     SAVE userOrder to sales_data.csv
     FROM Inventory remove userOrder[Quantity]
 END
-
-
-Generating Sales Receipt module
-FUNCTION salesReceipt(userOrder)
-    DEFINE salesReceipt (Product Names, Quantities, Individual Prices, totalCost)
-    SET salesReceipt = userOrder
-    DISPLAY Thank you for your order.
-    DISPLAY salesReceipt
-    RETURN
-END
-
-Calculating discount module
-FUNCTION discountCalculation(Price)
-    DECLARE discount = 10%
-    discountPrice = Price * discount
-    totalCost = Price - discountPrice
-    RETURN totalCost
-ENFUNCTION
