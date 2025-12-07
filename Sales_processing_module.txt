@@ -62,7 +62,7 @@ DECLARE Cart = [Empty list]  // stores users items while they shop
                 CALL newItemSearch
             END IF
         CALL continueToShop
-    UNTIL itemSearch OR continueToShop = FALSE
+    UNTIL itemSearch == FALSE OR continueToShop == FALSE
     User to check out
     IF user has login THEN
         user logs in
@@ -88,5 +88,5 @@ DECLARE Cart = [Empty list]  // stores users items while they shop
     SET userOrder = [Product Names, Quantities, Individual Prices, totalCost]
     CALL salesReceipt(userOrder)
     SAVE userOrder to sales_data.csv
-    FROM Inventory remove userOrder[Quantity]
+    CALL remove_product
 END
