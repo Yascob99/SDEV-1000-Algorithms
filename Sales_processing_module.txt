@@ -1,5 +1,6 @@
 Processing Sales Transactions Pseudocode
-FUNCTION newItemSearch()
+
+FUNCTION newItemSearch() // function to handle if the item is not in inventory or not enough quantity in inventory
     DECLARE itemSearch = TRUE
     INPUT userInput = Would you like to complete a new item search? (y/n) 
     IF userInput == "n" THEN
@@ -7,7 +8,8 @@ FUNCTION newItemSearch()
     ENDIF
     RETURN itemSearch
 ENDFUNCTION
-FUNCTION continueShopping() 
+
+FUNCTION continueShopping() // function used as an exit condition for a the adding items to cart loop
     DECLARE continueToShop = TRUE
     DISPLAY Continue Shopping? (y/n)
     INPUT userInput
@@ -16,22 +18,25 @@ FUNCTION continueShopping()
     ENDIF
     RETURN continueToShop
 ENDFUNCTION
+
 FUNCTION discountCalculation(Price)
     DECLARE discount = 0.10
     discountPrice = Price * discount
     totalCost = Price - discountPrice
     RETURN totalCost
 ENFUNCTION
-FUNCTION salesReceipt(userOrder)
+
+FUNCTION salesReceipt(userOrder) // takes in the user order to display a sales receipt to then save to sales_data.csv
     DEFINE salesReceipt (Product Names, Quantities, Individual Prices, totalCost)
     SET salesReceipt = userOrder
     DISPLAY Thank you for your order.
     DISPLAY salesReceipt
     RETURN
 END
+
 START
 DEFINE salesReceipt // userOrder after calculation of cost
-Declare Inventory = [inventoryData]  // stores available inventory (Product ID,Product Name,Category,Quantity,Price)
+Declare Inventory = {inventoryData}  // stores available inventory (Product ID,Product Name,Category,Quantity,Price)
 DECLARE Cart = [Empty list]  // stores users items while they shop
     DO 
         INPUT ProductID
@@ -57,7 +62,7 @@ DECLARE Cart = [Empty list]  // stores users items while they shop
                 CALL newItemSearch
             END IF
         CALL continueToShop
-    UNTIL itemSearch OR continueToShop = FALSE
+    UNTIL itemSearch == FALSE OR continueToShop == FALSE
     User to check out
     IF user has login THEN
         user logs in
@@ -83,5 +88,5 @@ DECLARE Cart = [Empty list]  // stores users items while they shop
     SET userOrder = [Product Names, Quantities, Individual Prices, totalCost]
     CALL salesReceipt(userOrder)
     SAVE userOrder to sales_data.csv
-    FROM Inventory remove userOrder[Quantity]
+    CALL remove_product
 END

@@ -113,6 +113,15 @@ FUNCTION Merge(left, right, sortby)
     RETURN mergedList
 ENDFUNCTION
 
+FUNCTION updateProduct(List, keyToUpdate, value)
+index = binarySearch(sorted, productId)
+IF index != None THEN
+    RETURN False
+ELSE
+    SET product = List[index]
+    product[keyToUpdate] = value
+ENDIF
+
 add_product
 
 START
@@ -146,17 +155,24 @@ ENDFOR
 DO:
     DISPLAY "Product Information"
     IF modifyPrice AND Conformation == True THEN
-        INPUT Update
-        DISPLAY "Thanks for updating!"
-    IF modifyQuantity AND Conformation == True THEN
-        INPUT Update
-        DISPLAY "Thanks for updating!"
-    IF modifyCategory AND Conformation == True THEN
-        INPUT Update
-        DISPLAY "Thanks for updating!"
+        SET key = "Price"
+        value = INPUT Update
+    ELSE IF modifyQuantity AND Conformation == True THEN
+        SET key = "Quantity"
+        value = INPUT Update
+    ELSE IF modifyCategory AND Conformation == True THEN
+        SET key = "Category"
+        value = INPUT Update
+    ELSE
         RETURN False
+    END IF
 UNTIL False
-
+updateProduct(sorted, key, value)
+IF Product Found
+    DISPLAY "Thanks for Updating"
+ELSE
+    DISPLAY "Product not found"
+END IF
 END
 
 remove_product
