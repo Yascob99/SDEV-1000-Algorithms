@@ -27,7 +27,7 @@ FUNCTION discountCalculation(Price)
 ENFUNCTION
 
 FUNCTION salesReceipt(userOrder) // takes in the user order to display a sales receipt to then save to sales_data.csv
-    DEFINE salesReceipt (Product Names, Quantities, Individual Prices, totalCost)
+    DEFINE salesReceipt (productID,productName,Category,Quantity,Price,discountApplied,totalPrice)
     SET salesReceipt = userOrder
     DISPLAY Thank you for your order.
     DISPLAY salesReceipt
@@ -43,13 +43,13 @@ DECLARE Cart = [Empty list]  // stores users items while they shop
             IF ProductID IN Inventory THEN 
                 INPUT Quantity
                     IF Quantity IN Inventory THEN
-                        SET Cart = [ProductID:Quantity]
+                        SET Cart = [productID,productName,Category,Quantity,Price,discountApplied,totalPrice]
                     ELSE IF Quantity > Inventory THEN
                         DISPLAY length(Quantity) IN Inventory
                         INPUT userInput = Would you like to add available amount? (y/n)
                             IF userInput == "y" THEN
                                 SET Quantity = quantityInInventory
-                                SET Cart [ProductID:Quantity]
+                                SET Cart [productID,productName,Category,Quantity,Price,discountApplied,totalPrice]
                             ELSE userInput == "n" THEN
                                 CALL newItemSearch
                             ENDIF
@@ -85,8 +85,8 @@ DECLARE Cart = [Empty list]  // stores users items while they shop
     IF Quantity > 5
         CALL discountCalculation
     END IF
-    SET userOrder = [Product Names, Quantities, Individual Prices, totalCost]
+    SET userOrder = Cart
     CALL salesReceipt(userOrder)
     SAVE userOrder to sales_data.csv
-    CALL updateProduct[Inventory, Quantity, userOrder[Quantities]]
+    CALL updateProduct[Inventory, Quantity, (Quantity - userOrder[Quantity])]
 END
