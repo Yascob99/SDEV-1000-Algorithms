@@ -113,29 +113,33 @@ FUNCTION Merge(left, right, sortby)
     RETURN mergedList
 ENDFUNCTION
 
+add_product
+
 START
 
 accessInventory(user_name, password)
 INPUT addProduct
 INPUT (productID, productName, category, price, quantity)
 IF Conformation == True THEN
+    ADD Product
     DISPLAY "Product Added"
+    mergeSort(myList, "Product ID")
 ELSE
     Return False
 END
 
-
+modify_product
 
 START
 
 accessInventory(user_name, password)
-linearSearch(list, values)
-binarySearch(sorted, value)
+linearSearch(list, productId)
+binarySearch(sorted, productId)
 INPUT myList
-FOR i = 0 TO length(myList) - 1     // create the outer for loop
-    FOR j = 0 TO length(myList) - 1 - i // create the inner for loop
-        IF (myList[j] > myList[j + 1])      // if the next item is greater than the current item 
-            SWAP myList[j] and myList[j + 1]      // swap the value at the next index with the current index                       
+FOR i = 0 TO length(myList) - 1
+    FOR j = 0 TO length(myList) - 1 - i
+        IF (myList[j] > myList[j + 1])
+            SWAP myList[j] and myList[j + 1]                   
         ENDIF
     ENDFOR
 ENDFOR
@@ -155,13 +159,13 @@ UNTIL False
 
 END
 
-REMOVING A PRODUCT
+remove_product
 
 START
 
 accessInventory(user_name, password)
-linearSearch(list, values)
-binarySearch(sorted, value)
+linearSearch(list, productId)
+binarySearch(sorted, productId)
 INPUT myList
 FOR i = 0 TO length(myList) - 1     
     FOR j = 0 TO length(myList) - 1 - i 
