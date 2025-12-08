@@ -33,7 +33,7 @@ FUNCTION salesReceipt(login, userOrder) // takes in the user login and user orde
     DISPLAY salesReceipt
     SEND salesReceipt to Email
     RETURN
-END
+ENDFUNCTION
 
 START
 DEFINE salesReceipt // userOrder after calculation of cost
