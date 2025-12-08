@@ -113,55 +113,75 @@ FUNCTION Merge(left, right, sortby)
     RETURN mergedList
 ENDFUNCTION
 
+FUNCTION updateProduct(List, keyToUpdate, value)
+index = binarySearch(sorted, productId)
+IF index != None THEN
+    RETURN False
+ELSE
+    SET product = List[index]
+    product[keyToUpdate] = value
+ENDIF
+
+add_product
+
 START
 
 accessInventory(user_name, password)
 INPUT addProduct
 INPUT (productID, productName, category, price, quantity)
 IF Conformation == True THEN
+    ADD Product
     DISPLAY "Product Added"
+    mergeSort(myList, "Product ID")
 ELSE
     Return False
 END
 
-
+modify_product
 
 START
 
 accessInventory(user_name, password)
-linearSearch(list, values)
-binarySearch(sorted, value)
+linearSearch(list, productId)
+binarySearch(sorted, productId)
 INPUT myList
-FOR i = 0 TO length(myList) - 1     // create the outer for loop
-    FOR j = 0 TO length(myList) - 1 - i // create the inner for loop
-        IF (myList[j] > myList[j + 1])      // if the next item is greater than the current item 
-            SWAP myList[j] and myList[j + 1]      // swap the value at the next index with the current index                       
+FOR i = 0 TO length(myList) - 1
+    FOR j = 0 TO length(myList) - 1 - i
+        IF (myList[j] > myList[j + 1])
+            SWAP myList[j] and myList[j + 1]                   
         ENDIF
     ENDFOR
 ENDFOR
 DO:
     DISPLAY "Product Information"
     IF modifyPrice AND Conformation == True THEN
-        INPUT Update
-        DISPLAY "Thanks for updating!"
-    IF modifyQuantity AND Conformation == True THEN
-        INPUT Update
-        DISPLAY "Thanks for updating!"
-    IF modifyCategory AND Conformation == True THEN
-        INPUT Update
-        DISPLAY "Thanks for updating!"
+        SET key = "Price"
+        value = INPUT Update
+    ELSE IF modifyQuantity AND Conformation == True THEN
+        SET key = "Quantity"
+        value = INPUT Update
+    ELSE IF modifyCategory AND Conformation == True THEN
+        SET key = "Category"
+        value = INPUT Update
+    ELSE
         RETURN False
+    END IF
 UNTIL False
-
+updateProduct(sorted, key, value)
+IF Product Found
+    DISPLAY "Thanks for Updating"
+ELSE
+    DISPLAY "Product not found"
+END IF
 END
 
-REMOVING A PRODUCT
+remove_product
 
 START
 
 accessInventory(user_name, password)
-linearSearch(list, values)
-binarySearch(sorted, value)
+linearSearch(list, productId)
+binarySearch(sorted, productId)
 INPUT myList
 FOR i = 0 TO length(myList) - 1     
     FOR j = 0 TO length(myList) - 1 - i 
