@@ -26,11 +26,12 @@ FUNCTION discountCalculation(Price)
     RETURN totalCost
 ENFUNCTION
 
-FUNCTION salesReceipt(userOrder) // takes in the user order to display a sales receipt to then save to sales_data.csv
+FUNCTION salesReceipt(login, userOrder) // takes in the user login and user order to display a sales receipt to then save to sales_data.csv
     DEFINE salesReceipt (productID,productName,Category,Quantity,Price,discountApplied,totalPrice)
     SET salesReceipt = userOrder
     DISPLAY Thank you for your order.
     DISPLAY salesReceipt
+    SEND salesReceipt to Email
     RETURN
 END
 
@@ -39,8 +40,8 @@ DEFINE salesReceipt // userOrder after calculation of cost
 Declare Inventory = {inventoryData}  // stores available inventory (Product ID,Product Name,Category,Quantity,Price)
 DECLARE Cart = [Empty list]  // stores users items while they shop
     DO 
-        INPUT ProductID
-            IF ProductID IN Inventory THEN 
+        INPUT productName
+            IF productName IN Inventory THEN 
                 INPUT Quantity
                     IF Quantity IN Inventory THEN
                         SET Cart = [productID,productName,Category,Quantity,Price,discountApplied,totalPrice]
