@@ -219,12 +219,13 @@ def probability_report(ordersbyDate, productID):
     numDaysSold = len(dateKeys)
     percentDaysSold = str(round(numDaysSold/timespan * 100, 2)) + "%"
     avgSoldPerDay = str(round(totalSold/timespan, 2))
+    percentSoldPerDay = str(round(totalSold/timespan * 100, 2)) + "%"
     avgSoldPerDaySold = str(round(totalSold/numDaysSold, 2))
     fig, ax = plt.subplots()
     ax.axis('off')
     ax.axis('tight')
     ax.set_title("Probability of Sale of " + name)
-    table = ax.table(cellText=[[ percentDaysSold, avgSoldPerDay, avgSoldPerDaySold]],colLabels=[ " % Days Sold", "AVG Sales/Day", "Avg Sales/Day Sold"],loc='center', cellLoc='center')
+    table = ax.table(cellText=[[ percentDaysSold, avgSoldPerDay, percentSoldPerDay, avgSoldPerDaySold]],colLabels=[ " % Days Sold", "AVG Sales/Day", "% of Sale", "Avg Sales/Day Sold"],loc='center', cellLoc='center')
     plt.show() 
 
 def trend_report(ordersByDate):
